@@ -10,6 +10,11 @@ convertFrom = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 convertTo = "𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𝓿𝔀𝔁𝔂𝔃"
 conversionTable = dict(zip(convertFrom, convertTo))
 
+startText = """This bot will help you to convert text to 𝓬𝓾𝓻𝓼𝓲𝓿𝓮.
+To use this bot in your chats, type @CursiveTextBot <your message> into any chat's message box.
+Alternatively, you may chat with this bot directly and copy the cursive text to any application you want!
+"""
+
 LOG_PATH = ''
 FILE_NAME = 'log'
 
@@ -39,10 +44,14 @@ def convert(s):
 def on_chat_message(msg):
 
     content_type, chat_type, chat_id = telepot.glance(msg)
-    #print(telepot.glance(msg))
-    #print(msg)
-    
+
     if content_type == 'text':
+
+        if msg['text'] in ('/start', '/help'):
+
+            bot.sendMessage(chat_id, startText)
+            return
+
         bot.sendMessage(chat_id, convert(msg['text']))
         logger.info(f"{chat_type} message - {msg['from']['username']} said {msg['text']}")
     else:
@@ -51,7 +60,6 @@ def on_chat_message(msg):
 def on_inline_query(msg):
     def compute():
         query_string = telepot.glance(msg, flavor='inline_query')[2]
-        #print('Inline Query:', query_id, from_id, query_string)
 
         logger.info(f"inline query message - {msg['from']['username']} sent {query_string}")
 
